@@ -1,0 +1,16 @@
+{
+  "name": "AcademicStructure",
+  "display_name": "Estructura Académica",
+  "description": "Gestiona Grupos, Semestres y Gestiones académicas del sistema.",
+  "version": "1.0.0",
+  "author": "EduCard",
+  "provider": "Plugins\\AcademicStructure\\Providers\\AcademicServiceProvider",
+  "menu": [
+    {
+      "title": "Estructura Académica",
+      "icon": "book-open",
+      "route": "admin.plugins.academicstructure.index",
+      "permission": "plugins.view"
+    }
+  ]
+}

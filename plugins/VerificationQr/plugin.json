@@ -1,0 +1,16 @@
+{
+  "name": "VerificationQr",
+  "display_name": "Verificación QR",
+  "description": "Plugin de ejemplo para verificar carnets estudiantiles por QR.",
+  "version": "1.0.0",
+  "author": "EduCard",
+  "provider": "Plugins\\VerificationQr\\VerificationQrServiceProvider",
+  "menu": [
+    {
+      "title": "Verificación QR",
+      "icon": "qr-code",
+      "route": "admin.plugins.verificationqr.index",
+      "permission": "plugins.view"
+    }
+  ]
+}
