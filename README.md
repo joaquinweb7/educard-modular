@@ -2,57 +2,41 @@
 
 Sistema de generación de carnets estudiantiles. Consume la API del sistema principal (Trámites).
 
-## 📦 Instrucciones de Portabilidad / Instalación
+## 🐳 Instrucciones de Portabilidad (Docker / Laravel Sail)
 
-Este proyecto se ha configurado para ser portable **conservando los datos de producción y archivos subidos**. Sigue estos pasos para instalarlo en una nueva computadora:
+Este proyecto está **Dockerizado**. Puedes levantarlo en cualquier computadora sin instalar PHP ni MySQL manualmente.
 
 ### 1. Requisitos Previos
-- PHP >= 8.1
-- Composer
-- Node.js y NPM
-- MySQL / MariaDB (ej. XAMPP, Laragon)
+- Docker Desktop instalado y corriendo.
+- (En Windows) WSL2 habilitado.
 
-### 2. Clonar el repositorio
+### 2. Clonar y Preparar
 ```bash
 git clone https://github.com/joaquinweb7/educard-modular.git
 cd educard-modular
+cp .env.example .env
 ```
+*(Asegúrate de copiar manualmente la carpeta antigua de `storage/app/public` si necesitas restaurar fotos).*
 
-### 3. Instalar dependencias
+### 3. Instalar Dependencias Iniciales
+Si no tienes PHP local, usa este contenedor temporal:
 ```bash
-composer install
-npm install
-npm run build
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
 ```
 
-### 4. Configurar el Entorno (`.env`)
-- Copia el archivo de ejemplo y renómbralo:
-  ```bash
-  cp .env.example .env
-  ```
-- Abre el `.env` e ingresa los datos de conexión a tu nueva base de datos MySQL local:
-  ```env
-  DB_DATABASE=educard
-  DB_USERNAME=root
-  DB_PASSWORD=
-  ```
-- Genera la llave de la aplicación:
-  ```bash
-  php artisan key:generate
-  ```
-
-### 5. Restaurar Base de Datos y Archivos (IMPORTANTE)
-**NO EJECUTES** `php artisan migrate:fresh --seed` porque perderás los datos reales.
-1. Crea la base de datos `educard` vacía en tu MySQL.
-2. Importa el archivo `database_backup.sql` que se encuentra en la raíz del proyecto.
-3. Copia manualmente tu carpeta antigua de `storage/app/public` al nuevo proyecto para conservar las fotos y plantillas de carnets.
-
-### 6. Iniciar el Servidor
-Crea el enlace simbólico para las imágenes:
+### 4. Levantar el Proyecto
+Levanta el ecosistema (esto importará el archivo `database_backup.sql` automáticamente la primera vez):
 ```bash
-php artisan storage:link
+./vendor/bin/sail up -d
 ```
-Dado que este es el sistema satélite, levántalo en el **puerto 8001**:
+Genera la llave y compila assets:
 ```bash
-php artisan serve --port=8001
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan storage:link
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
 ```
+
+**¡Listo!** El sistema estará disponible en `http://localhost:8001`.
+
+> **Nota sobre la API:** En el panel de administrador, configura la URL de la API de Trámites hacia `http://host.docker.internal:8000` para que los contenedores puedan comunicarse.
